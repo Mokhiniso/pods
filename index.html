@@ -1,0 +1,647 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pods</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* MODE 1 — "You Today" */
+  --s-bg:#F5F2EC;--s-bg2:#EDE9E1;--s-bg3:#E4DFD5;
+  --s-text:#2C2820;--s-text2:#7A7060;--s-text3:#A89F93;
+  --s-border:#D8D2C8;--s-border2:#C8C0B4;
+  /* MODE 2 — "Pod / Growth" */
+  --p-bg:#F8F6F2;--p-bg2:#FFFFFF;
+  --p-green:#1A7A56;--p-green2:#15644A;--p-green-bg:#E8F5EE;--p-green-border:#A8D9C0;
+  --p-gold:#A07830;--p-gold-bg:#FBF4E8;--p-gold-border:#D4B87A;
+  --p-text:#1C1A17;--p-text2:#5A5448;--p-text3:#9A9080;
+  --p-border:#E0DAD2;--p-border2:#C8C0B4;
+  /* shared */
+  --r:14px;--r2:10px;--r3:20px;
+  --transition: all .35s cubic-bezier(.4,0,.2,1);
+}
+body{font-family:'Georgia',serif;background:var(--s-bg);color:var(--s-text);line-height:1.6;transition:background .5s,color .5s}
+body.pod-mode{background:var(--p-bg);color:var(--p-text)}
+/* --- SCREEN SYSTEM --- */
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+/* --- NAV --- */
+nav{padding:20px 0;border-bottom:1px solid var(--s-border);position:sticky;top:0;z-index:100;background:inherit;transition:border-color .5s,background .5s}
+body.pod-mode nav{border-color:var(--p-border)}
+.nav-inner{max-width:1040px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:20px;letter-spacing:-0.5px;font-weight:normal}
+.logo-mark{font-style:italic;color:var(--s-text3)}
+body.pod-mode .logo-mark{color:var(--p-green)}
+.nav-r{display:flex;align-items:center;gap:16px}
+.nav-link{font-family:-apple-system,sans-serif;font-size:14px;color:var(--s-text2);cursor:pointer;background:none;border:none;padding:0}
+body.pod-mode .nav-link{color:var(--p-text2)}
+.btn-ghost{font-family:-apple-system,sans-serif;font-size:13px;padding:8px 18px;border-radius:var(--r2);border:1px solid var(--s-border2);background:transparent;color:var(--s-text);cursor:pointer;transition:var(--transition)}
+.btn-ghost:hover{background:var(--s-bg2)}
+body.pod-mode .btn-ghost{border-color:var(--p-border2);color:var(--p-text);background:transparent}
+body.pod-mode .btn-ghost:hover{background:var(--p-bg2)}
+.btn-cta{font-family:-apple-system,sans-serif;font-size:13px;font-weight:600;padding:9px 20px;border-radius:var(--r2);border:none;background:var(--s-text);color:var(--s-bg);cursor:pointer;transition:var(--transition)}
+.btn-cta:hover{opacity:.85}
+body.pod-mode .btn-cta{background:var(--p-green);color:#fff}
+/* --- CONTAINERS --- */
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+/* --- HERO --- */
+.hero{padding:96px 0 80px}
+.mode-pill{display:inline-flex;align-items:center;gap:6px;background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r3);padding:5px 14px;margin-bottom:36px;font-family:-apple-system,sans-serif;font-size:12px;color:var(--s-text2);letter-spacing:.3px}
+.mode-dot{width:6px;height:6px;border-radius:50%;background:var(--s-text3)}
+body.pod-mode .mode-pill{background:var(--p-green-bg);border-color:var(--p-green-border);color:var(--p-green)}
+body.pod-mode .mode-dot{background:var(--p-green)}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:normal;line-height:1.08;letter-spacing:-2px;max-width:700px;margin-bottom:24px}
+.hero h1 em{font-style:italic;color:var(--s-text3)}
+body.pod-mode .hero h1 em{color:var(--p-green)}
+.hero-sub{font-family:-apple-system,sans-serif;font-size:17px;color:var(--s-text2);max-width:480px;line-height:1.75;margin-bottom:44px}
+body.pod-mode .hero-sub{color:var(--p-text2)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-primary{font-family:-apple-system,sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:var(--r2);border:none;background:var(--s-text);color:var(--s-bg);cursor:pointer;transition:var(--transition)}
+.btn-primary:hover{opacity:.82}
+body.pod-mode .btn-primary{background:var(--p-green);color:#fff}
+.btn-outline{font-family:-apple-system,sans-serif;font-size:14px;padding:13px 24px;border-radius:var(--r2);border:1px solid var(--s-border2);background:transparent;color:var(--s-text);cursor:pointer;transition:var(--transition)}
+.btn-outline:hover{background:var(--s-bg2)}
+body.pod-mode .btn-outline{border-color:var(--p-border2);color:var(--p-text);background:transparent}
+body.pod-mode .btn-outline:hover{background:var(--p-bg2)}
+.hero-note{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text3);margin-top:16px}
+/* --- SECTION COMMON --- */
+section{padding:72px 0;border-top:1px solid var(--s-border)}
+body.pod-mode section{border-color:var(--p-border)}
+.eyebrow{font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--s-text3);margin-bottom:12px}
+body.pod-mode .eyebrow{color:var(--p-green)}
+.sec-title{font-size:clamp(26px,4vw,40px);font-weight:normal;letter-spacing:-1px;line-height:1.15;margin-bottom:12px}
+.sec-sub{font-family:-apple-system,sans-serif;font-size:16px;color:var(--s-text2);max-width:500px;line-height:1.75}
+body.pod-mode .sec-sub{color:var(--p-text2)}
+/* --- DUAL TONE VISUAL --- */
+.dual-section{padding:72px 0;border-top:1px solid var(--s-border)}
+body.pod-mode .dual-section{border-color:var(--p-border)}
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:var(--r);overflow:hidden;border:1px solid var(--s-border);margin-top:48px}
+@media(max-width:680px){.dual-grid{grid-template-columns:1fr}}
+.dual-panel{padding:36px 32px}
+.dual-panel.still{background:var(--s-bg2)}
+.dual-panel.growth{background:var(--p-bg2);border-left:3px solid var(--p-green)}
+.dp-label{font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--s-text3);margin-bottom:20px}
+.growth .dp-label{color:var(--p-green)}
+.dp-amount{font-size:40px;letter-spacing:-2px;margin-bottom:6px}
+.still .dp-amount{color:var(--s-text2)}
+.growth .dp-amount{color:var(--p-green)}
+.dp-detail{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text3);line-height:1.6}
+.growth .dp-detail{color:var(--p-text2)}
+.dp-bar{margin-top:20px;height:3px;border-radius:2px;background:var(--s-border)}
+.dp-bar-fill{height:100%;border-radius:2px;background:var(--s-text3);transition:width 1s ease}
+.growth .dp-bar{background:var(--p-green-bg)}
+.growth .dp-bar-fill{background:var(--p-green)}
+.dp-controls{margin-top:32px;display:flex;flex-direction:column;gap:16px}
+.dp-row label{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2);display:flex;justify-content:space-between;margin-bottom:8px}
+.dp-row label span{color:var(--s-text);font-weight:600}
+.growth .dp-row label{color:var(--p-text2)}
+.growth .dp-row label span{color:var(--p-text)}
+input[type=range]{width:100%;accent-color:var(--s-text)}
+.growth input[type=range]{accent-color:var(--p-green)}
+/* --- STEPS --- */
+.steps-list{margin-top:48px;display:flex;flex-direction:column;gap:0}
+.step-item{display:grid;grid-template-columns:48px 1fr;gap:24px;padding:28px 0;border-bottom:1px solid var(--s-border);position:relative}
+body.pod-mode .step-item{border-color:var(--p-border)}
+.step-item:last-child{border-bottom:none}
+.step-n{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text3);padding-top:4px}
+body.pod-mode .step-n{color:var(--p-text3)}
+.step-body h3{font-size:20px;font-weight:normal;letter-spacing:-.5px;margin-bottom:8px}
+.step-body p{font-family:-apple-system,sans-serif;font-size:15px;color:var(--s-text2);line-height:1.75;max-width:560px}
+body.pod-mode .step-body p{color:var(--p-text2)}
+.step-tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;padding:3px 10px;border-radius:var(--r3);margin-bottom:10px}
+.tag-gold{background:var(--p-gold-bg);color:var(--p-gold);border:1px solid var(--p-gold-border)}
+.tag-green{background:var(--p-green-bg);color:var(--p-green);border:1px solid var(--p-green-border)}
+/* --- PODS LIVE --- */
+.pods-row{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap}
+.pod-card{flex:1;min-width:200px;background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r);padding:24px;transition:var(--transition)}
+body.pod-mode .pod-card{background:var(--p-bg2);border-color:var(--p-border)}
+.pod-card:hover{border-color:var(--s-border2)}
+body.pod-mode .pod-card:hover{border-color:var(--p-border2)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.pc-name{font-size:16px;letter-spacing:-.3px}
+.pc-perf{font-family:-apple-system,sans-serif;font-size:12px;font-weight:600;padding:3px 9px;border-radius:var(--r3);background:var(--p-green-bg);color:var(--p-green);border:1px solid var(--p-green-border)}
+.pc-forming{background:var(--p-gold-bg);color:var(--p-gold);border-color:var(--p-gold-border)}
+.pc-avatars{display:flex;gap:3px;margin-bottom:12px}
+.av{width:26px;height:26px;border-radius:50%;font-family:-apple-system,sans-serif;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--s-bg2)}
+body.pod-mode .av{border-color:var(--p-bg2)}
+.av1{background:#D4EDE2;color:#1A7A56}.av2{background:#D4E0F0;color:#2A5A9A}.av3{background:#EDE0D4;color:#8A4A2A}.av4{background:#E0D4ED;color:#5A2A8A}
+.pc-meta{font-family:-apple-system,sans-serif;font-size:12px;color:var(--s-text3)}
+body.pod-mode .pc-meta{color:var(--p-text3)}
+.pc-bar{margin-top:10px;height:2px;border-radius:2px;background:var(--s-border)}
+body.pod-mode .pc-bar{background:var(--p-border)}
+.pc-bar-fill{height:100%;border-radius:2px;background:var(--p-green)}
+/* --- TRUST --- */
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+@media(max-width:700px){.trust-grid{grid-template-columns:repeat(2,1fr)}}
+.trust-item{padding:24px 20px;background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r)}
+body.pod-mode .trust-item{background:var(--p-bg2);border-color:var(--p-border)}
+.ti-icon{font-size:20px;margin-bottom:12px}
+.ti-title{font-size:15px;letter-spacing:-.3px;margin-bottom:6px}
+.ti-sub{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2);line-height:1.5}
+body.pod-mode .ti-sub{color:var(--p-text2)}
+/* --- CTA SECTION --- */
+.cta-box{background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r);padding:64px 48px;text-align:center;margin-top:0}
+body.pod-mode .cta-box{background:var(--p-bg2);border-color:var(--p-border)}
+.cta-box h2{font-size:clamp(28px,4vw,44px);font-weight:normal;letter-spacing:-1.2px;margin-bottom:14px}
+.cta-box p{font-family:-apple-system,sans-serif;font-size:16px;color:var(--s-text2);max-width:400px;margin:0 auto 36px;line-height:1.75}
+body.pod-mode .cta-box p{color:var(--p-text2)}
+.email-row{display:flex;gap:10px;max-width:380px;margin:0 auto}
+.email-row input{flex:1;background:var(--s-bg);border:1px solid var(--s-border2);border-radius:var(--r2);padding:12px 16px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--s-text);outline:none;transition:border-color .2s}
+.email-row input:focus{border-color:var(--s-text)}
+body.pod-mode .email-row input{background:var(--p-bg);border-color:var(--p-border2);color:var(--p-text)}
+body.pod-mode .email-row input:focus{border-color:var(--p-green)}
+.cta-fine{font-family:-apple-system,sans-serif;font-size:12px;color:var(--s-text3);margin-top:14px}
+.cta-ok{display:none;font-family:-apple-system,sans-serif;font-size:15px;font-weight:600;color:var(--p-green);padding:14px}
+/* --- FOOTER --- */
+footer{border-top:1px solid var(--s-border);padding:28px 0;font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text3)}
+body.pod-mode footer{border-color:var(--p-border)}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+/* --- SHADOW SCREEN --- */
+#shadow-screen{background:var(--s-bg)}
+.shadow-nav{padding:20px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--s-border);max-width:100%}
+.shadow-badge{font-family:-apple-system,sans-serif;font-size:12px;background:var(--p-gold-bg);color:var(--p-gold);border:1px solid var(--p-gold-border);padding:5px 14px;border-radius:var(--r3);font-weight:600;letter-spacing:.3px}
+.shadow-wrap{max-width:760px;margin:0 auto;padding:56px 28px}
+.shadow-step{display:none}
+.shadow-step.active{display:block}
+/* progress */
+.prog-bar{display:flex;gap:6px;margin-bottom:56px}
+.prog-seg{flex:1;height:2px;border-radius:2px;background:var(--s-border);transition:background .4s}
+.prog-seg.done{background:var(--p-green)}
+.prog-seg.active{background:var(--s-text2)}
+/* step titles */
+.sh-eyebrow{font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--s-text3);margin-bottom:14px}
+.sh-title{font-size:clamp(24px,4vw,36px);font-weight:normal;letter-spacing:-1px;line-height:1.2;margin-bottom:10px}
+.sh-sub{font-family:-apple-system,sans-serif;font-size:15px;color:var(--s-text2);line-height:1.75;margin-bottom:36px;max-width:520px}
+/* cards in shadow */
+.option-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
+.opt-card{background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r);padding:20px 24px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:space-between}
+.opt-card:hover{border-color:var(--s-border2);background:var(--s-bg3)}
+.opt-card.selected{background:var(--p-green-bg);border-color:var(--p-green-border)}
+.opt-label{font-size:16px;letter-spacing:-.3px}
+.opt-sub{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2);margin-top:3px}
+.opt-card.selected .opt-sub{color:var(--p-green2)}
+.opt-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--s-border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.opt-card.selected .opt-check{background:var(--p-green);border-color:var(--p-green)}
+.check-inner{width:6px;height:6px;border-radius:50%;background:#fff;opacity:0}
+.opt-card.selected .check-inner{opacity:1}
+/* amount picker */
+.amount-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:36px}
+@media(max-width:500px){.amount-grid{grid-template-columns:repeat(2,1fr)}}
+.amt-btn{padding:18px 10px;border-radius:var(--r);border:1px solid var(--s-border);background:var(--s-bg2);font-size:18px;letter-spacing:-.5px;cursor:pointer;text-align:center;transition:var(--transition)}
+.amt-btn:hover{border-color:var(--s-border2)}
+.amt-btn.selected{background:var(--p-green-bg);border-color:var(--p-green-border);color:var(--p-green)}
+.amt-sub{font-family:-apple-system,sans-serif;font-size:11px;color:var(--s-text3);margin-top:4px}
+/* vote cards */
+.vote-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:36px}
+.vote-card{background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r);padding:22px;cursor:pointer;transition:var(--transition)}
+.vote-card:hover{border-color:var(--s-border2)}
+.vote-card.voted{background:var(--p-green-bg);border-color:var(--p-green-border)}
+.vc-name{font-size:16px;letter-spacing:-.3px;margin-bottom:6px}
+.vc-stat{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2)}
+.vote-card.voted .vc-stat{color:var(--p-green2)}
+.vc-bar-wrap{margin-top:12px;height:3px;border-radius:2px;background:var(--s-border)}
+.vc-bar-fill{height:100%;border-radius:2px;background:var(--p-green);transition:width .8s ease}
+/* result card */
+.result-card{background:var(--p-bg2);border:1px solid var(--p-border);border-radius:var(--r);padding:32px;margin-bottom:28px}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--p-border)}
+.result-row:last-child{border-bottom:none}
+.rr-label{font-family:-apple-system,sans-serif;font-size:14px;color:var(--p-text2)}
+.rr-val{font-size:17px;letter-spacing:-.5px}
+.rr-val.green{color:var(--p-green)}
+.rr-val.gold{color:var(--p-gold)}
+/* nav buttons */
+.sh-nav-row{display:flex;gap:12px;align-items:center}
+.btn-back{font-family:-apple-system,sans-serif;font-size:14px;color:var(--s-text2);background:none;border:none;cursor:pointer;padding:0}
+.btn-next{font-family:-apple-system,sans-serif;font-size:15px;font-weight:600;padding:13px 32px;border-radius:var(--r2);border:none;background:var(--s-text);color:var(--s-bg);cursor:pointer;transition:var(--transition)}
+.btn-next:hover{opacity:.82}
+.btn-next.green{background:var(--p-green);color:#fff}
+.btn-next:disabled{opacity:.35;cursor:not-allowed}
+/* psych nudge */
+.nudge{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text3);margin-top:14px;font-style:italic}
+/* confetti row */
+.member-bar{display:flex;align-items:center;gap:8px;background:var(--s-bg2);border:1px solid var(--s-border);border-radius:var(--r2);padding:12px 16px;margin-bottom:28px}
+.mb-avatars{display:flex;gap:-4px}
+.mb-text{font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2)}
+.mb-text strong{color:var(--s-text);font-weight:600}
+</style>
+</head><body>
+
+<!-- ═══════════ LANDING SCREEN ═══════════ -->
+<div class="screen active" id="landing-screen">
+
+<nav><div class="nav-inner">
+  <div class="logo">pods<span class="logo-mark">.</span></div>
+  <div class="nav-r">
+    <button class="nav-link btn-ghost" onclick="openShadow()">Try shadow investing</button>
+    <button class="btn-cta" onclick="document.getElementById('cta-email').focus()">Get early access</button>
+  </div>
+</div></nav>
+
+<div class="wrap">
+
+  <section style="border:none;padding:96px 0 80px">
+    <div class="mode-pill"><span class="mode-dot"></span> Your money is waiting for a decision</div>
+    <h1>Investing isn't<br>scary. <em>Doing it<br>alone</em> is.</h1>
+    <p class="hero-sub">Join a small group. Make decisions together. Grow from €25 to investor-backed capital — at your own pace.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('cta-email').focus()">Reserve your spot in a pod</button>
+      <button class="btn-outline" onclick="openShadow()">Try it first — no money needed</button>
+    </div>
+    <p class="hero-note" style="font-family:-apple-system,sans-serif">While your savings sit still, 1,200+ people are already building together.</p>
+  </section>
+
+  <!-- DUAL TONE WIDGET -->
+  <div class="dual-section">
+    <div class="eyebrow">Your alternative path</div>
+    <div class="sec-title">Two futures. Same starting point.</div>
+    <p class="sec-sub">Move the sliders. Watch the gap grow.</p>
+    <div class="dual-grid">
+      <div class="dual-panel still">
+        <div class="dp-label">You today — savings account</div>
+        <div class="dp-amount" id="still-val">€9,282</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:12px;color:var(--s-text3);margin-bottom:12px">Purchasing power in today's euros</div>
+        <div style="background:var(--s-bg3);border-radius:var(--r2);padding:14px 16px;margin-bottom:16px">
+          <div style="font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--s-text3);margin-bottom:8px">What inflation takes from you</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2)">Eurozone HICP — March 2026</span>
+            <span style="font-size:18px;letter-spacing:-.5px;color:var(--s-text)" id="inf-rate-disp">2.5%</span>
+          </div>
+          <div style="font-family:-apple-system,sans-serif;font-size:13px;color:var(--s-text2)">Purchasing power lost: <span style="color:var(--s-text);font-weight:600" id="pwr-lost">€718</span></div>
+          <div style="font-family:-apple-system,sans-serif;font-size:11px;color:var(--s-text3);margin-top:6px">Source: Eurostat · updated April 2026</div>
+        </div>
+        <div class="dp-bar"><div class="dp-bar-fill" id="still-bar" style="width:93%"></div></div>
+        <div style="font-family:-apple-system,sans-serif;font-size:11px;color:var(--s-text3);margin-top:6px;margin-bottom:16px" id="still-bar-label">92.8¢ of every euro preserved after 3 years</div>
+        <div class="dp-controls">
+          <div class="dp-row"><label>Savings <span id="s-disp">€10,000</span></label><input type="range" min="1000" max="100000" step="500" value="10000" id="s-sl" oninput="calc()"></div>
+          <div class="dp-row"><label>Years <span id="y-disp">3</span></label><input type="range" min="1" max="20" step="1" value="3" id="y-sl" oninput="calc()"></div>
+        </div>
+      </div>
+      <div class="dual-panel growth">
+        <div class="dp-label">You with a pod — investing together</div>
+        <div class="dp-amount" id="pod-val">€13,197</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:12px;color:var(--p-text3);margin-bottom:12px">Estimated portfolio value</div>
+        <div style="background:var(--p-green-bg);border:1px solid var(--p-green-border);border-radius:var(--r2);padding:14px 16px;margin-bottom:16px">
+          <div style="font-family:-apple-system,sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--p-green);margin-bottom:8px">What a pod builds for you</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-family:-apple-system,sans-serif;font-size:13px;color:var(--p-text2)">S&P 500 avg annual return</span>
+            <span style="font-size:18px;letter-spacing:-.5px;color:var(--p-green)">~10%</span>
+          </div>
+          <div style="font-family:-apple-system,sans-serif;font-size:13px;color:var(--p-text2)">Real gain over savings: <span style="color:var(--p-green);font-weight:600" id="pod-gain">+€3,915</span></div>
+          <div style="font-family:-apple-system,sans-serif;font-size:11px;color:var(--p-text3);margin-top:6px">Based on historical index avg · not a guarantee</div>
+        </div>
+        <div class="dp-bar"><div class="dp-bar-fill" id="pod-bar" style="width:100%"></div></div>
+        <div style="font-family:-apple-system,sans-serif;font-size:11px;color:var(--p-text3);margin-top:6px;margin-bottom:16px" id="pod-bar-label">Contributions + index growth after 3 years</div>
+        <div class="dp-controls">
+          <div class="dp-row"><label>Monthly contribution <span id="c-disp">€50</span></label><input type="range" min="25" max="200" step="25" value="50" id="c-sl" oninput="calc()"></div>
+          <div class="dp-row" style="visibility:hidden"><label>—</label><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="eyebrow">How it works</div>
+    <div class="sec-title">Three steps.</div>
+    <p class="sec-sub">No financial experience needed. Each step is designed to build confidence, not pressure.</p>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-n">01</div>
+        <div class="step-body">
+          <h3>Get matched to a pod</h3>
+          <p>A short onboarding — your goals, comfort with risk, what interests you. You're matched with compatible people. No algorithms. No cold strangers.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-n">02</div>
+        <div class="step-body">
+          <span class="step-tag tag-green">Core experience</span>
+          <h3>Invest and decide together</h3>
+          <p>Contribute €25–€100 monthly. Propose ideas. Vote on where to allocate. A mentor guides — but never controls. Shared decisions mean shared confidence.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-n">03</div>
+        <div class="step-body">
+          <span class="step-tag tag-gold">Your differentiator</span>
+          <h3>Build a track record. Get backed.</h3>
+          <p>Strong pods attract attention. Experienced investors can discover your pod's performance and allocate additional capital to it — not because of your credentials, but your decisions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE PODS -->
+  <section>
+    <div class="eyebrow">Live pods</div>
+    <div class="sec-title">Real groups, real decisions.</div>
+    <div class="pods-row">
+      <div class="pod-card">
+        <div class="pc-top"><span class="pc-name">Tech & AI</span><span class="pc-perf">+14.2%</span></div>
+        <div class="pc-avatars"><div class="av av1">AR</div><div class="av av2">JK</div><div class="av av3">ML</div><div class="av av4">+2</div></div>
+        <div class="pc-meta">€4,320 pool · 5 members · vote closes in 3 days</div>
+        <div class="pc-bar"><div class="pc-bar-fill" style="width:72%"></div></div>
+      </div>
+      <div class="pod-card">
+        <div class="pc-top"><span class="pc-name">Green Energy</span><span class="pc-perf">+8.6%</span></div>
+        <div class="pc-avatars"><div class="av av3">SM</div><div class="av av1">TK</div><div class="av av4">BN</div></div>
+        <div class="pc-meta">€2,150 pool · 3 members · all voted this week</div>
+        <div class="pc-bar"><div class="pc-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="pod-card">
+        <div class="pc-top"><span class="pc-name">S&P 500 Core</span><span class="pc-perf pc-forming">Forming</span></div>
+        <div class="pc-avatars"><div class="av av2">YL</div><div class="av av4" style="background:#EDE0D4;color:#8A4A2A">+?</div></div>
+        <div class="pc-meta">Looking for 2–3 more members · 1 spot taken</div>
+        <div class="pc-bar"><div class="pc-bar-fill" style="width:33%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section>
+    <div class="eyebrow">Built for trust</div>
+    <div class="sec-title">Safe to start.</div>
+    <div class="trust-grid">
+      <div class="trust-item"><div class="ti-icon">◯</div><div class="ti-title">No leverage</div><p class="ti-sub">Simple, diversified instruments only. No complexity, ever.</p></div>
+      <div class="trust-item"><div class="ti-icon">◯</div><div class="ti-title">From €25/month</div><p class="ti-sub">Low enough to feel safe. Real enough to feel meaningful.</p></div>
+      <div class="trust-item"><div class="ti-icon">◯</div><div class="ti-title">Withdraw anytime</div><p class="ti-sub">Full liquidity. Your money is never locked away.</p></div>
+      <div class="trust-item"><div class="ti-icon">◯</div><div class="ti-title">Full transparency</div><p class="ti-sub">Every vote, decision, and return visible to all pod members.</p></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="border-top:1px solid var(--s-border)">
+    <div class="cta-box">
+      <h2>Get early access<br>to your first pod.</h2>
+      <p>Join 1,200+ future investors already on the list. We'll match you when we launch.</p>
+      <div class="email-row">
+        <input type="email" id="cta-email" placeholder="your@email.com">
+        <button class="btn-primary" onclick="handleCTA()">Reserve spot</button>
+      </div>
+      <div class="cta-ok" id="cta-ok">You're on the list. We'll be in touch.</div>
+      <p class="cta-fine">No spam. No commitment. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+<footer><div class="wrap foot-inner">
+  <span>© 2026 Pods</span>
+  <span style="display:flex;gap:20px"><a href="#" style="color:var(--s-text3)">Privacy</a><a href="#" style="color:var(--s-text3)">Terms</a><a href="#" style="color:var(--s-text3)">For mentors</a></span>
+</div></footer>
+</div><!-- /landing -->
+
+
+<!-- ═══════════ SHADOW INVESTING SCREEN ═══════════ -->
+<div class="screen" id="shadow-screen">
+<div class="shadow-nav">
+  <div class="logo">pods<span class="logo-mark">.</span></div>
+  <div class="shadow-badge">Shadow mode — no real money</div>
+  <button class="btn-ghost" onclick="closeShadow()">← Back to site</button>
+</div>
+
+<div class="shadow-wrap">
+
+  <!-- PROGRESS BAR -->
+  <div class="prog-bar">
+    <div class="prog-seg active" id="ps0"></div>
+    <div class="prog-seg" id="ps1"></div>
+    <div class="prog-seg" id="ps2"></div>
+    <div class="prog-seg" id="ps3"></div>
+    <div class="prog-seg" id="ps4"></div>
+  </div>
+
+  <!-- STEP 0: Welcome -->
+  <div class="shadow-step active" id="ss0">
+    <div class="sh-eyebrow">Shadow investing</div>
+    <div class="sh-title">This is what investing together feels like.</div>
+    <div class="sh-sub">No real money. No risk. Just the real experience — the decisions, the group dynamic, the results.<br><br>You'll join a simulated pod, make a real investment decision, and see how your choice plays out. Takes about 3 minutes.</div>
+    <div class="sh-nav-row">
+      <button class="btn-next green" onclick="goStep(1)">Start the experience →</button>
+    </div>
+    <p class="nudge">89% of people who tried shadow investing joined a real pod within 2 weeks.</p>
+  </div>
+
+  <!-- STEP 1: Pick interest -->
+  <div class="shadow-step" id="ss1">
+    <div class="sh-eyebrow">Step 1 of 4 — Your interests</div>
+    <div class="sh-title">What would you actually enjoy investing in?</div>
+    <div class="sh-sub">This isn't a quiz. There's no wrong answer. Pick what genuinely interests you.</div>
+    <div class="option-grid" id="interest-opts">
+      <div class="opt-card" onclick="selectOpt(this,'interest')">
+        <div><div class="opt-label">Technology & AI</div><div class="opt-sub">Software, semiconductors, the infrastructure of tomorrow</div></div>
+        <div class="opt-check"><div class="check-inner"></div></div>
+      </div>
+      <div class="opt-card" onclick="selectOpt(this,'interest')">
+        <div><div class="opt-label">Sustainable energy</div><div class="opt-sub">Solar, wind, the companies building a cleaner world</div></div>
+        <div class="opt-check"><div class="check-inner"></div></div>
+      </div>
+      <div class="opt-card" onclick="selectOpt(this,'interest')">
+        <div><div class="opt-label">Broad market (S&P 500)</div><div class="opt-sub">Simple, diversified, historically proven</div></div>
+        <div class="opt-check"><div class="check-inner"></div></div>
+      </div>
+      <div class="opt-card" onclick="selectOpt(this,'interest')">
+        <div><div class="opt-label">Real assets & infrastructure</div><div class="opt-sub">Real estate funds, toll roads, stable long-term returns</div></div>
+        <div class="opt-check"><div class="check-inner"></div></div>
+      </div>
+    </div>
+    <div class="sh-nav-row">
+      <button class="btn-back" onclick="goStep(0)">← Back</button>
+      <button class="btn-next" id="next1" disabled onclick="goStep(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Commitment amount -->
+  <div class="shadow-step" id="ss2">
+    <div class="sh-eyebrow">Step 2 of 4 — Your contribution</div>
+    <div class="sh-title">How much would you put in each month?</div>
+    <div class="sh-sub">In shadow mode this is imaginary. In a real pod, it's yours to withdraw anytime.</div>
+    <div class="amount-grid">
+      <div class="amt-btn" onclick="selectAmt(this,25)"><div>€25</div><div class="amt-sub">A coffee a week</div></div>
+      <div class="amt-btn" onclick="selectAmt(this,50)"><div>€50</div><div class="amt-sub">Most common</div></div>
+      <div class="amt-btn" onclick="selectAmt(this,75)"><div>€75</div></div>
+      <div class="amt-btn" onclick="selectAmt(this,100)"><div>€100</div><div class="amt-sub">Top contributor</div></div>
+    </div>
+    <div class="sh-nav-row">
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+      <button class="btn-next" id="next2" disabled onclick="goStep(3)">Continue →</button>
+    </div>
+    <p class="nudge" id="amt-nudge" style="display:none"></p>
+  </div>
+
+  <!-- STEP 3: Vote -->
+  <div class="shadow-step" id="ss3">
+    <div class="sh-eyebrow">Step 3 of 4 — Pod decision</div>
+    <div class="sh-title">Your pod is voting. What do you choose?</div>
+    <div class="sh-sub">You've been matched with 4 others. This month's decision: where should the pod allocate its new contributions?</div>
+    <div class="member-bar">
+      <div class="mb-avatars" style="display:flex;gap:4px"><div class="av av1" style="border:none">AR</div><div class="av av2" style="border:none">MK</div><div class="av av3" style="border:none">TL</div><div class="av av4" style="border:none">SD</div></div>
+      <div class="mb-text"><strong>3 of 5 have voted.</strong> You and one other haven't yet. Your vote determines the outcome.</div>
+    </div>
+    <div class="vote-grid" id="vote-opts">
+      <div class="vote-card" onclick="castVote(this,'A')">
+        <div class="vc-name">Stay the course</div>
+        <div class="vc-stat">Keep current allocation. Lower risk this month.</div>
+        <div class="vc-bar-wrap"><div class="vc-bar-fill" style="width:0" id="va-bar"></div></div>
+        <div class="vc-stat" style="margin-top:8px" id="va-count">1 vote so far</div>
+      </div>
+      <div class="vote-card" onclick="castVote(this,'B')">
+        <div class="vc-name">Increase exposure</div>
+        <div class="vc-stat">Add 15% more to index position. Capture momentum.</div>
+        <div class="vc-bar-wrap"><div class="vc-bar-fill" style="width:0" id="vb-bar"></div></div>
+        <div class="vc-stat" style="margin-top:8px" id="vb-count">2 votes so far</div>
+      </div>
+    </div>
+    <div class="sh-nav-row">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-next" id="next3" disabled onclick="goStep(4)">See the result →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Result -->
+  <div class="shadow-step" id="ss4">
+    <div class="sh-eyebrow">Step 4 of 4 — Your result</div>
+    <div class="sh-title" id="result-title">Your pod voted to increase exposure.</div>
+    <div class="sh-sub" id="result-sub">Here's what your shadow portfolio looks like after 3 simulated months in the pod.</div>
+    <div class="result-card">
+      <div class="result-row"><span class="rr-label">Your total contributions</span><span class="rr-val" id="res-contrib">€150</span></div>
+      <div class="result-row"><span class="rr-label">Pod return (simulated)</span><span class="rr-val green" id="res-return">+€18.90</span></div>
+      <div class="result-row"><span class="rr-label">Pod portfolio value</span><span class="rr-val green" id="res-total">€168.90</span></div>
+      <div class="result-row"><span class="rr-label">Your pod members</span><span class="rr-val" style="font-size:14px">AR, MK, TL, SD + you</span></div>
+      <div class="result-row"><span class="rr-label">Next vote</span><span class="rr-val gold">In 28 days</span></div>
+    </div>
+    <p style="font-family:-apple-system,sans-serif;font-size:14px;color:var(--s-text2);line-height:1.75;margin-bottom:32px">This was shadow mode. Everything you just experienced — the matching, the vote, the result — is exactly how a real pod works. The only difference is real money grows in the real version.</p>
+    <div class="sh-nav-row" style="flex-wrap:wrap;gap:12px">
+      <button class="btn-next green" onclick="closeShadow();setTimeout(()=>document.getElementById('cta-email').focus(),400)">Join a real pod →</button>
+      <button class="btn-outline" onclick="resetShadow()">Try again with different choices</button>
+    </div>
+    <p class="nudge" style="margin-top:16px">You've experienced what most people are afraid to start. The hardest part is already behind you.</p>
+  </div>
+
+</div><!-- /shadow-wrap -->
+</div><!-- /shadow-screen -->
+
+<script>
+/* ---- CALC ---- */
+const INF=0.025; // Eurozone HICP March 2026 — Eurostat
+const POD_RATE=0.10; // S&P 500 historical avg annual return
+function fmt(n){return '€'+Math.round(n).toLocaleString('de-DE')}
+function fmtC(n){return (n*100).toFixed(1)+'¢'}
+function calc(){
+  const s=+document.getElementById('s-sl').value;
+  const y=+document.getElementById('y-sl').value;
+  const c=+document.getElementById('c-sl').value;
+  document.getElementById('s-disp').textContent=fmt(s);
+  document.getElementById('y-disp').textContent=y;
+  document.getElementById('c-disp').textContent=fmt(c);
+
+  // Savings side — purchasing power in today's euros
+  const pwrFactor=Math.pow(1-INF,y);
+  const real=s*pwrFactor;
+  const lost=s-real;
+  document.getElementById('still-val').textContent=fmt(real);
+  document.getElementById('pwr-lost').textContent=fmt(lost);
+  document.getElementById('still-bar').style.width=Math.round(pwrFactor*100)+'%';
+  document.getElementById('still-bar-label').textContent=fmtC(pwrFactor)+' of every euro preserved after '+y+' year'+(y!==1?'s':'');
+
+  // Pod side — real portfolio value
+  const podS=s*Math.pow(1+POD_RATE,y);
+  const contribG=c*12*((Math.pow(1+POD_RATE/12,y*12)-1)/(POD_RATE/12));
+  const total=podS+contribG;
+  const gain=total-real;
+  document.getElementById('pod-val').textContent=fmt(total);
+  document.getElementById('pod-gain').textContent='+'+fmt(gain);
+  document.getElementById('pod-bar').style.width=Math.min(100,Math.round(total/(s*1.5)*100))+'%';
+  document.getElementById('pod-bar-label').textContent=fmt(c*12*y)+' contributed + index growth after '+y+' year'+(y!==1?'s':'');
+}
+calc();
+
+/* ---- CTA ---- */
+function handleCTA(){
+  const v=document.getElementById('cta-email').value;
+  if(v&&v.includes('@')){
+    document.querySelector('.email-row').style.display='none';
+    document.getElementById('cta-ok').style.display='block';
+    document.querySelector('.cta-fine').style.display='none';
+  }
+}
+
+/* ---- SHADOW SCREEN ---- */
+let shadowStep=0;
+let selectedAmt=0;
+let userVote='';
+
+function openShadow(){
+  document.getElementById('landing-screen').classList.remove('active');
+  document.getElementById('shadow-screen').classList.add('active');
+  window.scrollTo(0,0);
+}
+function closeShadow(){
+  document.getElementById('shadow-screen').classList.remove('active');
+  document.getElementById('landing-screen').classList.add('active');
+  window.scrollTo(0,0);
+}
+function resetShadow(){
+  selectedAmt=0;userVote='';
+  document.querySelectorAll('.opt-card').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.amt-btn').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.vote-card').forEach(e=>e.classList.remove('voted'));
+  document.getElementById('next1').disabled=true;
+  document.getElementById('next2').disabled=true;
+  document.getElementById('next3').disabled=true;
+  goStep(0);
+}
+
+function goStep(n){
+  document.getElementById('ss'+shadowStep).classList.remove('active');
+  for(let i=0;i<5;i++){
+    const s=document.getElementById('ps'+i);
+    s.classList.remove('active','done');
+    if(i<n)s.classList.add('done');
+    if(i===n)s.classList.add('active');
+  }
+  shadowStep=n;
+  document.getElementById('ss'+n).classList.add('active');
+  document.querySelector('.shadow-wrap').scrollTop=0;
+  window.scrollTo(0,0);
+}
+
+function selectOpt(el,group){
+  document.querySelectorAll('#interest-opts .opt-card').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('next1').disabled=false;
+}
+
+const nudges={25:'Even €25 compounds meaningfully over time. And in a pod, every euro is a decision.',50:'€50 is the most common starting point — serious enough to feel real, small enough to feel safe.',75:'You\'re above average already.',100:'Top contributors in pods tend to stay the longest.'};
+function selectAmt(el,amt){
+  document.querySelectorAll('.amt-btn').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAmt=amt;
+  document.getElementById('next2').disabled=false;
+  const n=document.getElementById('amt-nudge');
+  n.textContent=nudges[amt];n.style.display='block';
+}
+
+function castVote(el,v){
+  document.querySelectorAll('.vote-card').forEach(e=>e.classList.remove('voted'));
+  el.classList.add('voted');
+  userVote=v;
+  const aVotes=v==='A'?2:1;const bVotes=v==='B'?3:2;const total=5;
+  document.getElementById('va-bar').style.width=Math.round(aVotes/total*100)+'%';
+  document.getElementById('vb-bar').style.width=Math.round(bVotes/total*100)+'%';
+  document.getElementById('va-count').textContent=aVotes+' vote'+(aVotes!==1?'s':'');
+  document.getElementById('vb-count').textContent=bVotes+' vote'+(bVotes!==1?'s':'');
+  document.getElementById('next3').disabled=false;
+
+  const contrib=selectedAmt*3;
+  const rate=v==='B'?0.042:0.021;
+  const ret=contrib*rate;
+  const total2=contrib+ret;
+  document.getElementById('res-contrib').textContent=fmt(contrib);
+  document.getElementById('res-return').textContent='+'+fmt(ret);
+  document.getElementById('res-total').textContent=fmt(total2);
+  if(v==='B'){
+    document.getElementById('result-title').textContent='Your pod voted to increase exposure.';
+    document.getElementById('result-sub').textContent='The majority agreed with the growth move. Here\'s what your shadow portfolio looks like after 3 simulated months.';
+  } else {
+    document.getElementById('result-title').textContent='Your pod voted to stay the course.';
+    document.getElementById('result-sub').textContent='A cautious, stable month. Steady decisions build long-term confidence. Here\'s your shadow portfolio after 3 months.';
+  }
+}
+</script>
+</body></html>
